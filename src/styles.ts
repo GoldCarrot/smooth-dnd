@@ -137,12 +137,4 @@ function addCursorStyleToBody(cursor: string) {
 	return null;
 }
 
-function removeStyle(styleElement: HTMLStyleElement) {
-	if (styleElement && typeof (window) !== 'undefined') {
-		const head = window.document.head || window.document.getElementsByTagName("head")[0];
-		head.removeChild(styleElement);
-	}
-}
-
-export { addStyleToHead, addCursorStyleToBody, removeStyle };
-
+export { addStyleToHead, addCursorStyleToBody };

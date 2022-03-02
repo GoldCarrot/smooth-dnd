@@ -3,7 +3,7 @@ import { defaultOptions } from './defaults';
 import dragScroller from './scroller';
 import { Axis, DraggableInfo, ElementX, GhostInfo, IContainer, MousePosition, Position, TopLeft, Orientation } from './interfaces';
 import './polyfills';
-import { addCursorStyleToBody, addStyleToHead, removeStyle } from './styles';
+import { addStyleToHead } from './styles';
 import * as Utils from './utils';
 import { ContainerOptions } from './exportTypes';
 
@@ -23,7 +23,6 @@ let missedDrag = false;
 let handleDrag: (info: DraggableInfo) => boolean = null!;
 let handleScroll: (props: { draggableInfo?: DraggableInfo; reset?: boolean }) => void = null!;
 let sourceContainerLockAxis: Axis | null = null;
-let cursorStyleElement: HTMLStyleElement | null = null;
 
 const containerRectableWatcher = watchRectangles();
 
@@ -112,12 +111,9 @@ function getGhostElement(wrapperElement: HTMLElement, { x, y }: Position, contai
   if (container.getOptions().dragClass) {
     setTimeout(() => {
       Utils.addClass(ghost.firstElementChild as HTMLElement, container.getOptions().dragClass!);
-      const dragCursor = window.getComputedStyle(ghost.firstElementChild!).cursor;
-      cursorStyleElement = addCursorStyleToBody(dragCursor!);
     });
-  } else {
-    cursorStyleElement = addCursorStyleToBody(cursor);
   }
+
   Utils.addClass(ghost, container.getOptions().orientation || 'vertical');
   Utils.addClass(ghost, constants.ghostClass);
 
@@ -351,16 +347,6 @@ function onMouseDown(event: MouseEvent & TouchEvent) {
 
       if (startDrag) {
         container.layout.invalidate();
-        Utils.addClass(window.document.body, constants.disbaleTouchActions);
-        Utils.addClass(window.document.body, constants.noUserSelectClass);
-
-        const onMouseUp = () => {
-          Utils.removeClass(window.document.body, constants.disbaleTouchActions);
-          Utils.removeClass(window.document.body, constants.noUserSelectClass);
-          window.document.removeEventListener('mouseup', onMouseUp);
-        }
-
-        window.document.addEventListener('mouseup', onMouseUp);
       }
 
       if (startDrag) {
@@ -468,10 +454,6 @@ function onMouseUp() {
   removeReleaseListeners();
   handleScroll({ reset: true });
 
-  if (cursorStyleElement) {
-    removeStyle(cursorStyleElement);
-    cursorStyleElement = null;
-  }
   if (draggableInfo) {
     containerRectableWatcher.stop();
     handleMissedDragFrame();
