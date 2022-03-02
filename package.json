@@ -1,5 +1,5 @@
 {
-  "name": "@goldcarrot/smooth-dnd",
+  "name": "gc-smooth-dnd",
   "version": "0.12.2",
   "description": "Drag and Drop library",
   "main": "./dist/index.js",
